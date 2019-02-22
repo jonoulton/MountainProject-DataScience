@@ -1,0 +1,5 @@
+pickledPeople filter=lfs diff=lfs merge=lfs -text
+pickledVotes_unpacked filter=lfs diff=lfs merge=lfs -text
+routeData.json filter=lfs diff=lfs merge=lfs -text
+votePageData.json filter=lfs diff=lfs merge=lfs -text
+areaData.json filter=lfs diff=lfs merge=lfs -text
