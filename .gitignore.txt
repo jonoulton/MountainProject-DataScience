@@ -1,0 +1,10 @@
+# Files that are too large
+./Data/pickledPeople
+
+./Data/pickledVotes_unpacked
+
+./Data/votePageData.json
+
+./Data/areaData.json
+
+./Data/routeData.json
