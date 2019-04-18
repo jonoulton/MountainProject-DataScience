@@ -306,7 +306,7 @@ def get_best_worst(routes):
         print(i+1, ":", worstRoutes.iloc[i]['name'], worstRoutes.iloc[i]['diffRating'], "---", worstRoutes.index[i])
     print("---\n")
 
-# Function to reduce the ratings to 5.0-5.15
+# Function to reduce the ratings to 5.0-5.15 from a python list (NOT a Pandas Dataframe)
 def reduceRatings(ratingList):  
     ratings = ['5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '5.13', '5.14', '5.15']
     newList = []
@@ -314,6 +314,24 @@ def reduceRatings(ratingList):
         if ratingList[i] in ratings:
             newList.append(ratingList[i])
     return sorted(newList)
+
+# Function to reduce the ratings to 5.0-5.15 from a Dataframe with other data
+def reduceRatingsDF(df):  
+    ratings = ['5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '5.13', '5.14', '5.15']
+    newList = []
+    i = 0
+    while i < len(df):
+        try:
+            if df.iloc[i]['simpleDiffRating'] in ratings:
+                i = i+1
+                continue
+            else:
+                df = df.drop(df.index[i])
+            print(i/len(df), end='\r')
+        except:
+            break
+
+    return df
 
 # Function to get the densitry of route ratings
 def countRatings(ratingList, density=False):
@@ -327,4 +345,58 @@ def countRatings(ratingList, density=False):
         for i in ratings:
             ratingsDict[i] = ratingsDict[i]/len(ratingList)
     return ratingsDict
+
+def avg_quality_by_grade(routes):
+    ratings = ['5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '5.13', '5.14', '5.15']
+
+    # Create a dict with all the grades as keys => The values will be the number of routes
+    byGrade = {}
+    for i in ratings:
+        byGrade[i] = [0, 0]
+
+    # Calculate the average difficulty of routes per grade
+    for i in range(len(routes)):
+        route = routes.iloc[i]
+        grade = route['simpleDiffRating']
+        avgRating = route['avgQualityRating']
+        try:
+            byGrade[grade][0] = byGrade[grade][0] + 1
+            byGrade[grade][1] = byGrade[grade][1] + avgRating
+
+        except:
+            continue
+    for i in byGrade:
+        try:
+            byGrade[i][1] = byGrade[i][1]/byGrade[i][0]
+        except:
+            continue
+            
+    lst = range(0,16)
+    retDict = {}
+    for i in range(len(lst)):
+        retDict[lst[i]] = byGrade[ratings[i]]
+    return retDict
+
+def avg_quality_by_votes(routes):
+    # Create a dict with all the votes as keys => The values will be the number of routes
+    byVotes = {}
+    for i in routes['numQualityVotes']:
+        byVotes[i] = [0, 0]
+
+    # Calculate the average difficulty of routes per number of votes
+    for i in range(len(routes)):
+        route = routes.iloc[i]
+        votes = route['numQualityVotes']
+        avgRating = route['avgQualityRating']
+        try:
+            byVotes[votes][0] = byVotes[votes][0] + 1
+            byVotes[votes][1] = byVotes[votes][1] + avgRating
+        except:
+            continue
+    for i in byVotes:
+        try:
+            byVotes[i][1] = byVotes[i][1]/byVotes[i][0]
+        except:
+            continue
+    return byVotes
     
