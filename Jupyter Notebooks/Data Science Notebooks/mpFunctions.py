@@ -399,4 +399,21 @@ def avg_quality_by_votes(routes):
         except:
             continue
     return byVotes
-    
+
+def findAvgRating(routes):
+    ratings = []
+    for i in range(len(routes)):
+        ratings.append(routes.iloc[i]['avgQualityRating'])
+    return np.mean(ratings)
+
+def convertDiff(rating):
+    ratings = ['5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '5.13', '5.14', '5.15']
+    validRatings = {}
+    count = 0
+    for i in ratings:
+        validRatings[i] = count
+        count = count + 1
+    if rating in validRatings:
+        return validRatings[rating]
+    else:
+        return None
